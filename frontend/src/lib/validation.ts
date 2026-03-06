@@ -6,17 +6,11 @@ export const registerSchema = z.object({
     phone: z.string().min(10, "Phone number is required"),
     batch: z.string().min(1, "Batch is required"),
     module: z.string().min(1, "Module is required"),
-    password: z.string().min(12, "Min 12 characters, alphanumeric required"),
-    confirmPassword: z.string().min(1, "Confirm password is required"),
     consent: z.boolean().refine(val => val === true, "You must agree to the terms")
-}).refine(data => data.password === data.confirmPassword, {
-    message: "Passwords don't match",
-    path: ["confirmPassword"]
 });
 
 export const loginSchema = z.object({
-    email: z.string().email("Invalid credential format"),
-    password: z.string().min(1, "Access key is required")
+    email: z.string().email("Invalid credential format")
 });
 
 export const reportSchema = z.object({

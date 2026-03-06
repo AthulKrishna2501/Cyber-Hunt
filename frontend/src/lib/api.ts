@@ -1,39 +1,57 @@
-/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars */
-// Using a mock API flow to act as a backend substitute for the assignment
+const API_URL = 'http://127.0.0.1:8081/api';
 
 export const api = {
     register: async (data: any) => {
-        return new Promise<{ success: boolean, token: string }>((resolve) => {
-            setTimeout(() => resolve({ success: true, token: 'mock-jwt-token-123' }), 1500);
+        const response = await fetch(`${API_URL}/register`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
         });
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.message || 'Registration failed');
+        }
+        return response.json();
     },
     login: async (data: any) => {
-        return new Promise<{ success: boolean, token: string }>((resolve, reject) => {
-            setTimeout(() => {
-                if (data.email && data.password) {
-                    // allow any format-validated credentials since there is no DB hookup
-                    resolve({ success: true, token: 'mock-jwt-token-123' });
-                } else {
-                    reject(new Error("Invalid credentials"));
-                }
-            }, 1000);
+        const response = await fetch(`${API_URL}/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
         });
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.message || 'Login failed');
+        }
+        return response.json();
     },
     submitReport: async (data: FormData) => {
-        return new Promise<{ success: boolean }>((resolve) => {
-            setTimeout(() => resolve({ success: true }), 1500);
+        // Find user email from form data or local storage
+        const userEmail = localStorage.getItem('cyberhunt_user_email'); // We should store this during login
+        if (userEmail && !data.has('userEmail')) {
+            data.append('userEmail', userEmail);
+        }
+
+        const response = await fetch(`${API_URL}/reports`, {
+            method: 'POST',
+            body: data,
+            // Don't set Content-Type header when sending FormData; browser will set it with boundary
         });
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.message || 'Submission failed');
+        }
+        return response.json();
     },
     getSubmissions: async () => {
-        return new Promise<Array<any>>((resolve) => {
-            setTimeout(() => {
-                resolve([
-                    { id: '9823-X', title: 'SQL Injection in Auth Module', date: 'Oct 24, 2023', status: 'Verified' },
-                    { id: '7741-B', title: 'XSS on Profile Page', date: 'Oct 22, 2023', status: 'Pending' },
-                    { id: '4120-Q', title: 'Broken Access Control', date: 'Oct 20, 2023', status: 'Rejected' },
-                    { id: '1102-L', title: 'CSRF in Settings', date: 'Oct 18, 2023', status: 'Verified' },
-                ]);
-            }, 800);
-        });
+        const email = localStorage.getItem('cyberhunt_user_email');
+        if (!email) return [];
+
+        const response = await fetch(`${API_URL}/reports?email=${email}`);
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.message || 'Failed to fetch reports');
+        }
+        return response.json();
     }
 };

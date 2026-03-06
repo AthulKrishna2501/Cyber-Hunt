@@ -1,0 +1,16 @@
+# Secrets & Configuration
+.env
+credentials.json
+
+# Temporary Uploads
+uploads/
+
+# Binaries
+backend
+main
+*.exe
+*.test
+*.prof
+
+# Dependencies
+vendor/

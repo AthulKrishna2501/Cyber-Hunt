@@ -15,13 +15,32 @@ export default function Dashboard() {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
     const [file, setFile] = useState<File | null>(null);
+    const [userName, setUserName] = useState("Operator");
+    const [submissions, setSubmissions] = useState<any[]>([]);
+    const [isSubmissionsLoading, setIsSubmissionsLoading] = useState(true);
 
     useEffect(() => {
-        // Quick and dirty auth check for demo
         const token = localStorage.getItem('cyberhunt_token');
+        const storedUser = localStorage.getItem('cyberhunt_user');
+
         if (!token) {
             router.push('/login');
         }
+        if (storedUser) {
+            setUserName(storedUser);
+        }
+
+        const fetchRecentSubmissions = async () => {
+            try {
+                const data = await api.getSubmissions();
+                setSubmissions(data.slice(0, 3)); // Just show last 3
+            } catch (err) {
+                // Silently fail
+            } finally {
+                setIsSubmissionsLoading(false);
+            }
+        };
+        fetchRecentSubmissions();
     }, [router]);
 
     const { register, handleSubmit, formState: { errors }, reset } = useForm({
@@ -44,6 +63,10 @@ export default function Dashboard() {
             toast.success("Vulnerability report successfully encrypted and transmitted.");
             reset();
             setFile(null);
+
+            // Refresh submissions list
+            const dataSub = await api.getSubmissions();
+            setSubmissions(dataSub.slice(0, 3));
         } catch (err: any) {
             toast.error(err.message || "Submission failed");
         } finally {
@@ -67,20 +90,12 @@ export default function Dashboard() {
 
                     <nav className="flex flex-col gap-1">
                         <Link href="/dashboard" className="flex items-center gap-3 px-4 py-3 rounded bg-primary/10 text-primary transition-colors">
-                            <span className="material-symbols-outlined">grid_view</span>
-                            <span className="text-sm font-medium">Dashboard</span>
+                            <span className="material-symbols-outlined">edit_document</span>
+                            <span className="text-sm font-medium">Submit Report</span>
                         </Link>
                         <Link href="/submissions" className="flex items-center gap-3 px-4 py-3 rounded text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
                             <span className="material-symbols-outlined">description</span>
                             <span className="text-sm font-medium">Reports</span>
-                        </Link>
-                        <Link href="#" className="flex items-center gap-3 px-4 py-3 rounded text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
-                            <span className="material-symbols-outlined">database</span>
-                            <span className="text-sm font-medium">Bounties</span>
-                        </Link>
-                        <Link href="#" className="flex items-center gap-3 px-4 py-3 rounded text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
-                            <span className="material-symbols-outlined">trophy</span>
-                            <span className="text-sm font-medium">Leaderboard</span>
                         </Link>
                     </nav>
                 </div>
@@ -90,11 +105,12 @@ export default function Dashboard() {
                         <span className="material-symbols-outlined">person</span>
                     </div>
                     <div className="flex-1 min-w-0">
-                        <p className="text-sm font-semibold truncate">Operator</p>
-                        <p className="text-xs text-slate-500 dark:text-slate-400 truncate">Pro Hunter • Level 42</p>
+                        <p className="text-sm font-semibold truncate">{userName}</p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 truncate">Vulnerability Researcher</p>
                     </div>
                     <button onClick={() => {
                         localStorage.removeItem('cyberhunt_token');
+                        localStorage.removeItem('cyberhunt_user');
                         router.push('/');
                         toast.success("Logged out");
                     }} className="material-symbols-outlined text-slate-400 cursor-pointer hover:text-red-500 transition-colors">logout</button>
@@ -108,10 +124,7 @@ export default function Dashboard() {
                         <p className="text-slate-500 dark:text-slate-400 text-sm">Contribute to the security of the ecosystem.</p>
                     </div>
                     <div className="flex items-center gap-4">
-                        <div className="flex items-center gap-2 bg-slate-100 dark:bg-slate-800 px-3 py-1.5 rounded text-xs font-semibold text-slate-600 dark:text-slate-300">
-                            <span className="material-symbols-outlined text-sm">account_balance_wallet</span>
-                            $12,450.00 Earned
-                        </div>
+                        {/* Earned badge removed */}
                     </div>
                 </header>
 
@@ -186,6 +199,37 @@ export default function Dashboard() {
                             </button>
                         </div>
                     </form>
+
+                    <div className="mt-16 space-y-6">
+                        <div className="flex items-center justify-between">
+                            <h3 className="text-lg font-bold border-l-4 border-primary pl-4">Recently Logged Submissions</h3>
+                            <Link href="/submissions" className="text-sm text-primary hover:underline">View All Intercepts</Link>
+                        </div>
+
+                        <div className="bg-white dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+                            {isSubmissionsLoading ? (
+                                <div className="p-8 text-center text-slate-500">
+                                    <span className="material-symbols-outlined animate-spin">progress_activity</span>
+                                </div>
+                            ) : submissions.length === 0 ? (
+                                <div className="p-8 text-center text-slate-500 text-sm">No recent submissions found.</div>
+                            ) : (
+                                <div className="divide-y divide-slate-200 dark:divide-slate-800">
+                                    {submissions.map((sub, idx) => (
+                                        <div key={idx} className="p-4 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                                            <div className="flex flex-col">
+                                                <span className="font-semibold text-sm">{sub.title}</span>
+                                                <span className="text-xs text-slate-400">{sub.date} • {sub.id}</span>
+                                            </div>
+                                            <span className={`text-[10px] font-bold uppercase tracking-widest px-2 py-1 rounded bg-slate-100 dark:bg-slate-800 text-slate-500 ${sub.status === 'Verified' ? 'text-emerald-500' : ''}`}>
+                                                {sub.status}
+                                            </span>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    </div>
                 </section>
             </main>
         </div>

@@ -21,6 +21,8 @@ export default function Login() {
         try {
             const res = await api.login(data);
             localStorage.setItem('cyberhunt_token', res.token);
+            localStorage.setItem('cyberhunt_user', res.fullName);
+            localStorage.setItem('cyberhunt_user_email', data.email);
             toast.success("Authorization granted. Accessing Mainframe...");
             setTimeout(() => {
                 window.location.href = '/dashboard';
@@ -61,7 +63,14 @@ export default function Login() {
                                 <p className="text-slate-500 dark:text-slate-400 text-sm">Secure authorization required to access mainframe</p>
                             </div>
 
-                            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+                            <form
+                                onSubmit={(e) => {
+                                    e.preventDefault();
+                                    handleSubmit(onSubmit)(e);
+                                }}
+                                method="POST"
+                                className="space-y-6"
+                            >
                                 <div className="space-y-2">
                                     <label className="text-sm font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400">
                                         Identifier
@@ -78,30 +87,17 @@ export default function Login() {
                                     {errors.email && <p className="text-[12px] text-red-500 flex items-center gap-1 font-medium mt-1"><span className="material-symbols-outlined text-[14px]">error</span>{errors.email.message as string}</p>}
                                 </div>
 
-                                <div className="space-y-2">
-                                    <div className="flex justify-between items-center">
-                                        <label className="text-sm font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400">
-                                            Access Key
-                                        </label>
-                                        <Link href="#" className="text-xs font-medium text-primary hover:underline transition-all">Forgot Protocol?</Link>
-                                    </div>
-                                    <div className="relative group">
-                                        <span className={`material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 transition-colors ${errors.password ? 'text-red-500' : 'text-slate-400 group-focus-within:text-primary'}`}>key</span>
-                                        <input
-                                            type="password"
-                                            placeholder="••••••••••••"
-                                            {...register("password")}
-                                            className={`w-full bg-slate-50 dark:bg-background-dark/50 border rounded-full py-4 pl-12 pr-4 outline-none transition-all text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-600 ${errors.password ? 'border-red-500 focus:ring-2 focus:ring-red-500/20' : 'border-slate-200 dark:border-primary/30 focus:ring-2 focus:ring-primary/20 focus:border-primary'}`}
-                                        />
-                                    </div>
-                                    {errors.password && <p className="text-[12px] text-red-500 flex items-center gap-1 font-medium mt-1"><span className="material-symbols-outlined text-[14px]">error</span>{errors.password.message as string}</p>}
-                                </div>
-
                                 <div className="pt-2">
                                     <Button type="submit" isLoading={isLoading} className="w-full py-4 tracking-wide uppercase !rounded-full">
                                         {!isLoading && <span className="material-symbols-outlined">arrow_forward</span>}
-                                        Execute Login
+                                        EXECUTE LOGIN
                                     </Button>
+
+                                    <div className="mt-6 text-center">
+                                        <p className="text-sm text-slate-500 dark:text-slate-400">
+                                            Don't have an account? <Link href="/register" className="text-primary font-semibold hover:underline">Request Access Port</Link>
+                                        </p>
+                                    </div>
                                 </div>
                             </form>
                         </div>

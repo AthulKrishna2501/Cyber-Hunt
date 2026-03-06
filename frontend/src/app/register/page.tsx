@@ -20,7 +20,9 @@ export default function Register() {
     const onSubmit = async (data: any) => {
         setIsLoading(true);
         try {
-            await api.register(data);
+            const res = await api.register(data);
+            localStorage.setItem('cyberhunt_user', res.fullName);
+            localStorage.setItem('cyberhunt_user_email', data.email);
             toast.success("Identity established. Credentials accepted.");
             setTimeout(() => {
                 window.location.href = '/login';
@@ -55,7 +57,14 @@ export default function Register() {
                             <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">Please provide your official credentials for system clearance.</p>
                         </div>
 
-                        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                        <form
+                            onSubmit={(e) => {
+                                e.preventDefault();
+                                handleSubmit(onSubmit)(e);
+                            }}
+                            method="POST"
+                            className="space-y-4"
+                        >
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <InputField
                                     label="Full Name"
@@ -100,24 +109,6 @@ export default function Register() {
                                 />
 
                                 <div className="hidden md:block"></div>
-
-                                <InputField
-                                    label="Access Password"
-                                    icon="lock"
-                                    type="password"
-                                    placeholder="••••••••"
-                                    helpText="Min 12 chars, alphanumeric"
-                                    {...register("password")}
-                                    error={errors.password?.message as string}
-                                />
-                                <InputField
-                                    label="Confirm Password"
-                                    icon="verified_user"
-                                    type="password"
-                                    placeholder="••••••••"
-                                    {...register("confirmPassword")}
-                                    error={errors.confirmPassword?.message as string}
-                                />
                             </div>
 
                             <div className="flex items-start gap-3 p-4 bg-slate-100 dark:bg-slate-800/50 rounded-lg">
