@@ -15,7 +15,7 @@ export interface LoginData {
 
 // Helper to handle fetch with auth
 const fetchWithAuth = async (url: string, options: RequestInit = {}) => {
-    let accessToken = localStorage.getItem('cyberhunt_access_token');
+    const accessToken = localStorage.getItem('cyberhunt_access_token');
 
     // Add token to headers if it exists
     const headers = new Headers(options.headers);
@@ -48,7 +48,7 @@ const fetchWithAuth = async (url: string, options: RequestInit = {}) => {
                     // Refresh failed, logout
                     api.logout();
                 }
-            } catch (err) {
+            } catch {
                 api.logout();
             }
         } else {
