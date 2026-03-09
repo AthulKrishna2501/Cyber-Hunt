@@ -96,17 +96,18 @@ func GetUserSubmissions(c *fiber.Ctx) error {
 
 	userReports := []models.Report{}
 	for _, row := range rows {
-		// [ID, UserEmail, Title, Description, Steps, Severity, Target, Attachment Path, Status, Date]
+		// Schema: [Timestamp, ID, UserEmail, Title, Description, Steps, Severity, Attachment Path, Status, Date]
 		if len(row) >= 10 {
-			rowEmail := fmt.Sprintf("%v", row[1])
+			rowEmail := fmt.Sprintf("%v", row[2]) // Email is now at index 2
 			if rowEmail == email {
 				userReports = append(userReports, models.Report{
-					ID:             fmt.Sprintf("%v", row[0]),
+					Timestamp:      fmt.Sprintf("%v", row[0]),
+					ID:             fmt.Sprintf("%v", row[1]),
 					UserEmail:      rowEmail,
-					Title:          fmt.Sprintf("%v", row[2]),
-					Description:    fmt.Sprintf("%v", row[3]),
-					Steps:          fmt.Sprintf("%v", row[4]),
-					Severity:       fmt.Sprintf("%v", row[5]),
+					Title:          fmt.Sprintf("%v", row[3]),
+					Description:    fmt.Sprintf("%v", row[4]),
+					Steps:          fmt.Sprintf("%v", row[5]),
+					Severity:       fmt.Sprintf("%v", row[6]),
 					AttachmentPath: fmt.Sprintf("%v", row[7]),
 					Status:         fmt.Sprintf("%v", row[8]),
 					Date:           fmt.Sprintf("%v", row[9]),
