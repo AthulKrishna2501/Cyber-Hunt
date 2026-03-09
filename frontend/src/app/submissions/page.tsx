@@ -6,12 +6,22 @@ import { useState, useEffect } from "react";
 import { api } from "@/lib/api";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import ReportPreviewModal from "@/components/ReportPreviewModal";
 
 export default function Submissions() {
     const router = useRouter();
     const [submissions, setSubmissions] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [userName, setUserName] = useState("Operator");
+
+    // Modal state
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedReport, setSelectedReport] = useState<any>(null);
+
+    const handleViewReport = (report: any) => {
+        setSelectedReport(report);
+        setIsModalOpen(true);
+    };
 
     useEffect(() => {
         const token = localStorage.getItem('cyberhunt_access_token');
@@ -134,7 +144,11 @@ export default function Submissions() {
                                             </span>
                                         </td>
                                         <td className="px-6 py-5 text-right">
-                                            <button className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors text-slate-400">
+                                            <button
+                                                onClick={() => handleViewReport(sub)}
+                                                className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors text-slate-400 hover:text-primary dark:hover:text-primary"
+                                                title="View Report Details"
+                                            >
                                                 <span className="material-symbols-outlined text-lg">visibility</span>
                                             </button>
                                         </td>
@@ -145,6 +159,12 @@ export default function Submissions() {
                     </div>
                 </div>
             </main>
+
+            <ReportPreviewModal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                report={selectedReport}
+            />
         </div>
     );
 }
