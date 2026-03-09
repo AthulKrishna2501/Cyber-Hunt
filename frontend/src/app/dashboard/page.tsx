@@ -203,7 +203,7 @@ export default function Dashboard() {
                             <textarea
                                 rows={6}
                                 {...register("steps")}
-                                placeholder="1. Navigate to /api/v1/user&#10;2. Set the Authorization header&#10;3. Observe the response"
+                                placeholder={`1. Navigate to /api/v1/user\n2. Set the Authorization header\n3. Observe the response`}
                                 className={`w-full bg-slate-50 dark:bg-slate-950 border font-mono text-sm rounded-lg p-4 outline-none transition-all resize-none placeholder:text-slate-400 dark:placeholder:text-slate-600 ${errors.steps ? 'border-red-500 focus:ring-2 focus:ring-red-500/20' : 'border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-primary focus:border-transparent'}`}
                             ></textarea>
                             {errors.steps && <p className="text-[12px] text-red-500">{errors.steps.message as string}</p>}
