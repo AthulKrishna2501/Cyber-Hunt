@@ -46,8 +46,12 @@ func main() {
 	api := app.Group("/api")
 	api.Post("/register", handlers.Register)
 	api.Post("/login", handlers.Login)
-	api.Post("/reports", handlers.SubmitReport)
-	api.Get("/reports", handlers.GetUserSubmissions)
+	api.Post("/refresh", handlers.RefreshToken)
+
+	// Protected Routes
+	reports := api.Group("/reports", handlers.JWTMiddleware)
+	reports.Post("/", handlers.SubmitReport)
+	reports.Get("/", handlers.GetUserSubmissions)
 
 	app.Static("/uploads", "./uploads")
 

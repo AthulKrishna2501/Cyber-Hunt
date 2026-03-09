@@ -21,12 +21,13 @@ export default function Dashboard() {
     const [isSubmissionsLoading, setIsSubmissionsLoading] = useState(true);
 
     useEffect(() => {
-        const token = localStorage.getItem('cyberhunt_token');
+        const token = localStorage.getItem('cyberhunt_access_token');
         const storedUser = localStorage.getItem('cyberhunt_user');
         const storedTarget = localStorage.getItem('cyberhunt_target_url');
 
         if (!token) {
             router.push('/login');
+            return;
         }
         if (storedUser) {
             setUserName(storedUser);
@@ -114,9 +115,7 @@ export default function Dashboard() {
                         <p className="text-xs text-slate-500 dark:text-slate-400 truncate">Vulnerability Researcher</p>
                     </div>
                     <button onClick={() => {
-                        localStorage.removeItem('cyberhunt_token');
-                        localStorage.removeItem('cyberhunt_user');
-                        router.push('/');
+                        api.logout();
                         toast.success("Logged out");
                     }} className="material-symbols-outlined text-slate-400 cursor-pointer hover:text-red-500 transition-colors">logout</button>
                 </div>

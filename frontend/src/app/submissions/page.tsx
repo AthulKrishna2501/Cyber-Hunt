@@ -14,7 +14,7 @@ export default function Submissions() {
     const [userName, setUserName] = useState("Operator");
 
     useEffect(() => {
-        const token = localStorage.getItem('cyberhunt_token');
+        const token = localStorage.getItem('cyberhunt_access_token');
         const storedUser = localStorage.getItem('cyberhunt_user');
 
         if (!token) {
