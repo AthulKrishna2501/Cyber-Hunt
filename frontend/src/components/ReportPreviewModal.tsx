@@ -6,7 +6,8 @@ import toast from 'react-hot-toast';
 interface ReportPreviewModalProps {
     isOpen: boolean;
     onClose: () => void;
-    report: any; // Assuming 'any' for now, can be properly typed using the models
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    report: any;
 }
 
 export default function ReportPreviewModal({ isOpen, onClose, report }: ReportPreviewModalProps) {
