@@ -14,6 +14,27 @@ import (
 	"github.com/google/uuid"
 )
 
+// Helper to format steps as a numbered list
+func formatSteps(input string) string {
+	lines := strings.Split(input, "\n")
+	var formatted []string
+	counter := 1
+	for _, line := range lines {
+		trimmed := strings.TrimSpace(line)
+		if trimmed == "" {
+			continue
+		}
+		// Strip common list prefixes to re-number cleanly (e.g., "- ", "1. ", "* ")
+		trimmed = strings.TrimLeft(trimmed, "0123456789.-* \t")
+		if trimmed == "" {
+			continue
+		}
+		formatted = append(formatted, fmt.Sprintf("%d. %s", counter, trimmed))
+		counter++
+	}
+	return strings.Join(formatted, "\n")
+}
+
 func SubmitReport(c *fiber.Ctx) error {
 	// 1. Get user email from some auth context or request (for now we assume it's passed or we'll need it)
 	// In a real app, we'd get this from a JWT.
@@ -25,9 +46,10 @@ func SubmitReport(c *fiber.Ctx) error {
 
 	title := c.FormValue("title")
 	description := c.FormValue("description")
-	steps := c.FormValue("steps")
+	rawSteps := c.FormValue("steps")
 	severity := c.FormValue("severity")
 
+	formattedSteps := formatSteps(rawSteps)
 	secureURL := c.FormValue("proofUrl")
 
 	if secureURL == "" {
@@ -60,7 +82,7 @@ func SubmitReport(c *fiber.Ctx) error {
 		UserEmail:      userEmail,
 		Title:          title,
 		Description:    description,
-		Steps:          steps,
+		Steps:          formattedSteps,
 		Severity:       severity,
 		AttachmentPath: secureURL, // Store the Cloudinary Secure URL
 		Status:         "Pending",
