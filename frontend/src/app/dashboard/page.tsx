@@ -53,6 +53,8 @@ export default function Dashboard() {
         resolver: zodResolver(reportSchema)
     });
 
+    const [loadingStage, setLoadingStage] = useState<string | null>(null);
+
     const onSubmit = async (data: any) => {
         if (!file) {
             toast.error('Proof attachment is required');
@@ -60,23 +62,28 @@ export default function Dashboard() {
         }
 
         setIsLoading(true);
+        setLoadingStage("Transmitting Evidence...");
         try {
             const formData = new FormData();
             Object.keys(data).forEach(key => formData.append(key, data[key]));
             formData.append('proof', file);
 
-            await api.submitReport(formData);
+            const result = await api.submitReport(formData);
+            setLoadingStage("Finalizing Transmission...");
+
             toast.success("Vulnerability report successfully encrypted and transmitted.");
             reset();
             setFile(null);
 
-            // Refresh submissions list
-            const dataSub = await api.getSubmissions();
-            setSubmissions(dataSub.slice(0, 3));
+            // Optimistic UI Update: Use the result immediately instead of re-fetching
+            if (result && result.report) {
+                setSubmissions(prev => [result.report, ...prev].slice(0, 3));
+            }
         } catch (err: any) {
             toast.error(err.message || "Submission failed");
         } finally {
             setIsLoading(false);
+            setLoadingStage(null);
         }
     };
 
@@ -201,7 +208,7 @@ export default function Dashboard() {
                             </button>
                             <button disabled={isLoading} type="submit" className="bg-primary hover:bg-primary/90 text-white px-10 py-3 rounded-lg font-bold text-sm shadow-lg shadow-primary/20 transition-all disabled:opacity-50 flex items-center gap-2">
                                 {isLoading && <span className="material-symbols-outlined animate-spin text-lg">progress_activity</span>}
-                                Finalize &amp; Submit Report
+                                {isLoading ? loadingStage : "Finalize & Submit Report"}
                             </button>
                         </div>
                     </form>

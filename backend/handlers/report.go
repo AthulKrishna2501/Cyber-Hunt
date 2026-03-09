@@ -4,6 +4,7 @@ import (
 	"cyberhunt-backend/models"
 	"cyberhunt-backend/services"
 	"fmt"
+	"log"
 	"os"
 	"path/filepath"
 	"strings"
@@ -63,10 +64,14 @@ func SubmitReport(c *fiber.Ctx) error {
 		Timestamp:      time.Now().Format("Jan 02, 2006 15:04:05"),
 	}
 
-	// 5. Append to Sheets
-	if err := services.AppendReport(report); err != nil {
-		return c.Status(500).JSON(fiber.Map{"message": "Failed to log report: " + err.Error()})
-	}
+	// 5. Append to Sheets (Backgrounded for performance)
+	go func(r models.Report) {
+		if err := services.AppendReport(r); err != nil {
+			log.Printf("ERROR: Failed to log report to Google Sheets in background: %v", err)
+		} else {
+			log.Printf("SUCCESS: Report %s logged to Google Sheets in background", r.ID)
+		}
+	}(report)
 
 	return c.Status(201).JSON(fiber.Map{
 		"message": "Vulnerability report successfully encrypted and transmitted.",
