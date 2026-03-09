@@ -7,8 +7,8 @@ type Report struct {
 	Description    string `json:"description"`
 	Steps          string `json:"steps"`
 	Severity       string `json:"severity"`
-	Target         string `json:"target"`
 	AttachmentPath string `json:"attachmentPath"`
 	Status         string `json:"status"`
 	Date           string `json:"date"`
+	Timestamp      string `json:"timestamp"`
 }

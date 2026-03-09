@@ -23,6 +23,7 @@ export default function Login() {
             localStorage.setItem('cyberhunt_token', res.token);
             localStorage.setItem('cyberhunt_user', res.fullName);
             localStorage.setItem('cyberhunt_user_email', data.email);
+            localStorage.setItem('cyberhunt_target_url', res.targetUrl || "https://target.cyberhunt.com");
             toast.success("Authorization granted. Accessing Mainframe...");
             setTimeout(() => {
                 window.location.href = '/dashboard';

@@ -18,5 +18,4 @@ export const reportSchema = z.object({
     description: z.string().min(10, "Detailed description is required"),
     steps: z.string().min(10, "Reproduction steps are required"),
     severity: z.string().min(1, "Severity is required"),
-    target: z.string().min(1, "Target is required"),
 });

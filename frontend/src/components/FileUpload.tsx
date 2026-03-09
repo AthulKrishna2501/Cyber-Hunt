@@ -1,4 +1,5 @@
 import React, { useCallback, useState } from 'react';
+import { Modal } from './Modal';
 
 interface FileUploadProps {
     label: string;
@@ -16,12 +17,13 @@ export const FileUpload: React.FC<FileUploadProps> = ({
     maxSizeMB = 10
 }) => {
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const handleFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0] || null;
         if (file) {
             if (file.size > maxSizeMB * 1024 * 1024) {
-                alert(`File size exceeds ${maxSizeMB}MB`);
+                setIsModalOpen(true);
                 return;
             }
         }
@@ -31,6 +33,14 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 
     return (
         <div className="space-y-2">
+            <Modal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                title="Transmission Blocked"
+                message={`The payload size exceeds the maximum limit of ${maxSizeMB}MB. Please compress and retry.`}
+                type="error"
+            />
+
             <label className="block text-sm font-semibold text-slate-700 dark:text-slate-200">
                 {label}
             </label>

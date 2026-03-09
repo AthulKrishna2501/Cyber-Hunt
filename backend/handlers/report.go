@@ -26,7 +26,6 @@ func SubmitReport(c *fiber.Ctx) error {
 	description := c.FormValue("description")
 	steps := c.FormValue("steps")
 	severity := c.FormValue("severity")
-	target := c.FormValue("target")
 
 	// 2. Handle file upload
 	file, err := c.FormFile("proof")
@@ -58,10 +57,10 @@ func SubmitReport(c *fiber.Ctx) error {
 		Description:    description,
 		Steps:          steps,
 		Severity:       severity,
-		Target:         target,
 		AttachmentPath: secureURL, // Store the Cloudinary Secure URL
 		Status:         "Pending",
 		Date:           time.Now().Format("Jan 02, 2006"),
+		Timestamp:      time.Now().Format("Jan 02, 2006 15:04:05"),
 	}
 
 	// 5. Append to Sheets
@@ -86,7 +85,7 @@ func GetUserSubmissions(c *fiber.Ctx) error {
 		return c.Status(500).JSON(fiber.Map{"message": "Failed to fetch reports: " + err.Error()})
 	}
 
-	var userReports []models.Report
+	userReports := []models.Report{}
 	for _, row := range rows {
 		// [ID, UserEmail, Title, Description, Steps, Severity, Target, Attachment Path, Status, Date]
 		if len(row) >= 10 {
@@ -99,7 +98,6 @@ func GetUserSubmissions(c *fiber.Ctx) error {
 					Description:    fmt.Sprintf("%v", row[3]),
 					Steps:          fmt.Sprintf("%v", row[4]),
 					Severity:       fmt.Sprintf("%v", row[5]),
-					Target:         fmt.Sprintf("%v", row[6]),
 					AttachmentPath: fmt.Sprintf("%v", row[7]),
 					Status:         fmt.Sprintf("%v", row[8]),
 					Date:           fmt.Sprintf("%v", row[9]),

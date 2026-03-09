@@ -106,7 +106,7 @@ export default function Submissions() {
                                             <p className="mt-2 text-sm">Decrypting Packets...</p>
                                         </td>
                                     </tr>
-                                ) : submissions.length === 0 ? (
+                                ) : (submissions?.length === 0) ? (
                                     <tr>
                                         <td colSpan={4} className="py-12 text-center text-slate-500 text-sm">
                                             No intercepts found in the database.
@@ -117,7 +117,6 @@ export default function Submissions() {
                                         <td className="px-6 py-5">
                                             <div className="flex flex-col">
                                                 <span className="text-slate-900 dark:text-slate-100 font-semibold text-sm">{sub.title}</span>
-                                                <span className="text-slate-400 text-xs truncate max-w-xs">{sub.target}</span>
                                             </div>
                                         </td>
                                         <td className="px-6 py-5 text-slate-600 dark:text-slate-400 text-xs">
@@ -126,10 +125,10 @@ export default function Submissions() {
                                         </td>
                                         <td className="px-6 py-5">
                                             <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border ${sub.status === 'Verified'
-                                                    ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800'
-                                                    : sub.status === 'Pending'
-                                                        ? 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400 border-amber-200 dark:border-amber-800'
-                                                        : 'bg-rose-100 text-rose-800 dark:bg-rose-900/30 dark:text-rose-400 border-rose-200 dark:border-rose-800'
+                                                ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800'
+                                                : sub.status === 'Pending'
+                                                    ? 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400 border-amber-200 dark:border-amber-800'
+                                                    : 'bg-rose-100 text-rose-800 dark:bg-rose-900/30 dark:text-rose-400 border-rose-200 dark:border-rose-800'
                                                 }`}>
                                                 {sub.status}
                                             </span>

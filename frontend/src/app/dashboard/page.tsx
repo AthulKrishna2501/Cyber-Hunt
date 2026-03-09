@@ -16,18 +16,23 @@ export default function Dashboard() {
     const [isLoading, setIsLoading] = useState(false);
     const [file, setFile] = useState<File | null>(null);
     const [userName, setUserName] = useState("Operator");
+    const [targetUrl, setTargetUrl] = useState("https://target.cyberhunt.com");
     const [submissions, setSubmissions] = useState<any[]>([]);
     const [isSubmissionsLoading, setIsSubmissionsLoading] = useState(true);
 
     useEffect(() => {
         const token = localStorage.getItem('cyberhunt_token');
         const storedUser = localStorage.getItem('cyberhunt_user');
+        const storedTarget = localStorage.getItem('cyberhunt_target_url');
 
         if (!token) {
             router.push('/login');
         }
         if (storedUser) {
             setUserName(storedUser);
+        }
+        if (storedTarget) {
+            setTargetUrl(storedTarget);
         }
 
         const fetchRecentSubmissions = async () => {
@@ -119,12 +124,24 @@ export default function Dashboard() {
 
             <main className="flex-1 overflow-y-auto bg-background-light dark:bg-background-dark">
                 <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-10 py-6 border-b border-slate-200 dark:border-slate-800 sticky top-0 bg-background-light/90 dark:bg-background-dark/90 backdrop-blur z-10">
-                    <div>
+                    <div className="flex-1">
                         <h2 className="text-2xl font-bold tracking-tight">Submit Vulnerability</h2>
                         <p className="text-slate-500 dark:text-slate-400 text-sm">Contribute to the security of the ecosystem.</p>
                     </div>
-                    <div className="flex items-center gap-4">
-                        {/* Earned badge removed */}
+                    <div className="flex flex-col items-end gap-1 px-4 py-2 bg-primary/5 dark:bg-primary/10 border border-primary/20 rounded-xl">
+                        <span className="text-[10px] uppercase tracking-widest font-bold text-primary">Primary Target Scan</span>
+                        <div className="flex items-center gap-2">
+                            <code className="text-xs font-mono text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-950 px-2 py-1 rounded border border-slate-200 dark:border-slate-800">{targetUrl}</code>
+                            <button
+                                onClick={() => {
+                                    navigator.clipboard.writeText(targetUrl);
+                                    toast.success("Target URL copied to clipboard");
+                                }}
+                                className="material-symbols-outlined text-sm text-primary hover:scale-110 transition-transform cursor-pointer"
+                            >
+                                content_copy
+                            </button>
+                        </div>
                     </div>
                 </header>
 
@@ -168,25 +185,15 @@ export default function Dashboard() {
                             onChange={(f) => setFile(f)}
                         />
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div className="space-y-2">
-                                <label className="block text-sm font-semibold text-slate-700 dark:text-slate-200">Severity Level</label>
-                                <select {...register("severity")} className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-4 focus:ring-2 focus:ring-primary focus:border-transparent outline-none">
-                                    <option value="Critical">Critical</option>
-                                    <option value="High">High</option>
-                                    <option value="Medium">Medium</option>
-                                    <option value="Low">Low</option>
-                                    <option value="Informational">Informational</option>
-                                </select>
-                            </div>
-                            <div className="space-y-2">
-                                <label className="block text-sm font-semibold text-slate-700 dark:text-slate-200">Target Asset</label>
-                                <select {...register("target")} className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-4 focus:ring-2 focus:ring-primary focus:border-transparent outline-none">
-                                    <option value="api.cyberhunt.com">Core API (api.cyberhunt.com)</option>
-                                    <option value="app.cyberhunt.com">Web Dashboard (app.cyberhunt.com)</option>
-                                    <option value="mobile">Mobile Application (iOS/Android)</option>
-                                </select>
-                            </div>
+                        <div className="space-y-2">
+                            <label className="block text-sm font-semibold text-slate-700 dark:text-slate-200">Severity Level</label>
+                            <select {...register("severity")} className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-4 focus:ring-2 focus:ring-primary focus:border-transparent outline-none">
+                                <option value="Critical">Critical</option>
+                                <option value="High">High</option>
+                                <option value="Medium">Medium</option>
+                                <option value="Low">Low</option>
+                                <option value="Informational">Informational</option>
+                            </select>
                         </div>
 
                         <div className="flex items-center justify-end gap-4 pt-6 border-t border-slate-200 dark:border-slate-800">

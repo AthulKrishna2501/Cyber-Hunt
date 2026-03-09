@@ -52,6 +52,7 @@ export const api = {
             const error = await response.json();
             throw new Error(error.message || 'Failed to fetch reports');
         }
-        return response.json();
+        const data = await response.json();
+        return data || [];
     }
 };

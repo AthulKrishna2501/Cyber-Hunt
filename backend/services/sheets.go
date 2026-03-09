@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"time"
 
 	"cyberhunt-backend/models"
 
@@ -89,18 +90,18 @@ func formatHeader(sheetTitle string, columnCount int) error {
 }
 
 func EnsureUsersSheet() error {
-	// Define headers exactly as in the requested screenshot
-	headers := []interface{}{"FullName", "Email", "Phone", "Batch", "Module", "Consent"}
+	// Define headers including Timestamp as the first column
+	headers := []interface{}{"Date and Time", "FullName", "Email", "Phone", "Batch", "Module", "Consent"}
 	rb := &sheets.ValueRange{Values: [][]interface{}{headers}}
 
-	// Update headers to ensure naming is correct (FullName vs Full Name)
-	_, err := SheetsService.Spreadsheets.Values.Update(SheetID, "Users!A1:F1", rb).ValueInputOption("USER_ENTERED").Do()
+	// Update headers to ensure naming and column count is correct
+	_, err := SheetsService.Spreadsheets.Values.Update(SheetID, "Users!A1:G1", rb).ValueInputOption("USER_ENTERED").Do()
 	if err != nil {
 		return err
 	}
 
-	// Format the first 5 columns (FullName to Module) with the dark green theme
-	return formatHeader("Users", 5)
+	// Format all 7 columns with the dark green theme
+	return formatHeader("Users", 7)
 }
 
 func EnsureReportsSheet() error {
@@ -135,30 +136,33 @@ func EnsureReportsSheet() error {
 		}
 	}
 
-	resp, err := SheetsService.Spreadsheets.Values.Get(SheetID, "Reports!A1:J1").Do()
-	if err == nil && len(resp.Values) > 0 {
-		return formatHeader("Reports", 10)
-	}
-
-	headers := []interface{}{"ID", "User Email", "Title", "Description", "Steps", "Severity", "Target", "Attachment Path", "Status", "Date"}
+	// Always refresh headers to ensure Column A is "Date and Time"
+	headers := []interface{}{"Date and Time", "ID", "User Email", "Title", "Description", "Steps", "Severity", "Attachment Path", "Status", "Date"}
 	rb := &sheets.ValueRange{Values: [][]interface{}{headers}}
+
+	// Use a wider range to clear any old headers in J1 or K1 if they shifted
 	_, err = SheetsService.Spreadsheets.Values.Update(SheetID, "Reports!A1:J1", rb).ValueInputOption("USER_ENTERED").Do()
 	if err != nil {
 		return err
 	}
+
 	return formatHeader("Reports", 10)
 }
 
 func AppendUser(values []interface{}) error {
+	// Create a new slice with current timestamp as the first element
+	timestamp := time.Now().Format("Jan 02, 2006 15:04:05")
+	finalValues := append([]interface{}{timestamp}, values...)
+
 	rb := &sheets.ValueRange{
-		Values: [][]interface{}{values},
+		Values: [][]interface{}{finalValues},
 	}
-	_, err := SheetsService.Spreadsheets.Values.Append(SheetID, "Users!A:F", rb).ValueInputOption("USER_ENTERED").Do()
+	_, err := SheetsService.Spreadsheets.Values.Append(SheetID, "Users!A:G", rb).ValueInputOption("USER_ENTERED").Do()
 	return err
 }
 
 func GetUsers() ([][]interface{}, error) {
-	resp, err := SheetsService.Spreadsheets.Values.Get(SheetID, "Users!A:F").Do()
+	resp, err := SheetsService.Spreadsheets.Values.Get(SheetID, "Users!A:G").Do()
 	if err != nil {
 		return nil, err
 	}
@@ -167,13 +171,13 @@ func GetUsers() ([][]interface{}, error) {
 
 func AppendReport(report models.Report) error {
 	values := []interface{}{
+		report.Timestamp, // Move to first column
 		report.ID,
 		report.UserEmail,
 		report.Title,
 		report.Description,
 		report.Steps,
 		report.Severity,
-		report.Target,
 		report.AttachmentPath,
 		report.Status,
 		report.Date,

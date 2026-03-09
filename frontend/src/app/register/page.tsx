@@ -9,10 +9,13 @@ import { registerSchema } from "@/lib/validation";
 import { api } from "@/lib/api";
 import { InputField } from "@/components/InputField";
 import { Button } from "@/components/Button";
+import { Modal } from "@/components/Modal";
 import toast from "react-hot-toast";
 
 export default function Register() {
     const [isLoading, setIsLoading] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [targetUrl, setTargetUrl] = useState("");
     const { register, handleSubmit, formState: { errors } } = useForm({
         resolver: zodResolver(registerSchema)
     });
@@ -23,10 +26,10 @@ export default function Register() {
             const res = await api.register(data);
             localStorage.setItem('cyberhunt_user', res.fullName);
             localStorage.setItem('cyberhunt_user_email', data.email);
+            localStorage.setItem('cyberhunt_target_url', res.targetUrl || "https://target.cyberhunt.com");
+            setTargetUrl(res.targetUrl || "https://target.cyberhunt.com");
+            setIsModalOpen(true);
             toast.success("Identity established. Credentials accepted.");
-            setTimeout(() => {
-                window.location.href = '/login';
-            }, 1000);
         } catch (err: any) {
             toast.error(err.message || "Registration failed");
         } finally {
@@ -35,7 +38,14 @@ export default function Register() {
     };
 
     return (
-        <div className="layout-container flex h-full grow flex-col">
+        <div className="layout-container flex h-full grow flex-col relative">
+            <Modal
+                isOpen={isModalOpen}
+                onClose={() => window.location.href = '/login'}
+                title="Identity Established"
+                message={`Your credentials have been successfully encrypted. Your assigned target is: ${targetUrl}. Please proceed to the portal.`}
+                type="success"
+            />
             <header className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 px-6 lg:px-40 py-2 bg-background-light dark:bg-background-dark sticky top-0 z-50">
                 <Link href="/" className="flex items-center gap-2 text-primary">
                     <span className="material-symbols-outlined text-3xl font-bold">shield_with_heart</span>
