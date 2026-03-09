@@ -1,7 +1,20 @@
 const API_URL = 'http://127.0.0.1:8081/api';
 
+export interface RegisterData {
+    fullName: string;
+    email: string;
+    phone: string;
+    batch: string;
+    module: string;
+    consent: boolean;
+}
+
+export interface LoginData {
+    email: string;
+}
+
 export const api = {
-    register: async (data: any) => {
+    register: async (data: RegisterData) => {
         const response = await fetch(`${API_URL}/register`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -13,7 +26,7 @@ export const api = {
         }
         return response.json();
     },
-    login: async (data: any) => {
+    login: async (data: LoginData) => {
         const response = await fetch(`${API_URL}/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },

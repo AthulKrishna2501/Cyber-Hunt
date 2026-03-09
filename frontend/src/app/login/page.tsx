@@ -96,7 +96,7 @@ export default function Login() {
 
                                     <div className="mt-6 text-center">
                                         <p className="text-sm text-slate-500 dark:text-slate-400">
-                                            Don't have an account? <Link href="/register" className="text-primary font-semibold hover:underline">Request Access Port</Link>
+                                            Don&apos;t have an account? <Link href="/register" className="text-primary font-semibold hover:underline">Request Access Port</Link>
                                         </p>
                                     </div>
                                 </div>
