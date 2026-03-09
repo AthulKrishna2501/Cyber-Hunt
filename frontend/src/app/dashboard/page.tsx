@@ -66,10 +66,33 @@ export default function Dashboard() {
         try {
             const formData = new FormData();
             Object.keys(data).forEach(key => formData.append(key, data[key]));
-            formData.append('proof', file);
 
-            const result = await api.submitReport(formData);
+            const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+            const uploadPreset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
+
+            if (cloudName && uploadPreset) {
+                // Direct-to-Cloud Upload
+                const cloudinaryData = new FormData();
+                cloudinaryData.append('file', file);
+                cloudinaryData.append('upload_preset', uploadPreset);
+
+                const cloudinaryRes = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/upload`, {
+                    method: 'POST',
+                    body: cloudinaryData,
+                });
+
+                if (!cloudinaryRes.ok) {
+                    throw new Error("Direct-to-Cloud upload failed check preset settings");
+                }
+                const cloudResData = await cloudinaryRes.json();
+                formData.append('proofUrl', cloudResData.secure_url);
+            } else {
+                // Fallback path: standard backend upload
+                formData.append('proof', file);
+            }
+
             setLoadingStage("Finalizing Transmission...");
+            const result = await api.submitReport(formData);
 
             toast.success("Vulnerability report successfully encrypted and transmitted.");
             reset();

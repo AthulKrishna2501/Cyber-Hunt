@@ -28,26 +28,30 @@ func SubmitReport(c *fiber.Ctx) error {
 	steps := c.FormValue("steps")
 	severity := c.FormValue("severity")
 
-	// 2. Handle file upload
-	file, err := c.FormFile("proof")
-	if err != nil {
-		return c.Status(400).JSON(fiber.Map{"message": "Proof attachment is required"})
-	}
+	secureURL := c.FormValue("proofUrl")
 
-	// Create unique filename and sanitize it (replace spaces)
-	cleanName := strings.ReplaceAll(file.Filename, " ", "_")
-	filename := fmt.Sprintf("%s_%s", uuid.New().String(), cleanName)
-	savePath := filepath.Join("uploads", filename)
+	if secureURL == "" {
+		// 2. Handle file upload (Fallback if not direct-to-cloud)
+		file, err := c.FormFile("proof")
+		if err != nil {
+			return c.Status(400).JSON(fiber.Map{"message": "Proof attachment or proofUrl is required"})
+		}
 
-	if err := c.SaveFile(file, savePath); err != nil {
-		return c.Status(500).JSON(fiber.Map{"message": "Failed to save temporary attachment: " + err.Error()})
-	}
-	defer os.Remove(savePath) // Clean up local temporary file
+		// Create unique filename and sanitize it (replace spaces)
+		cleanName := strings.ReplaceAll(file.Filename, " ", "_")
+		filename := fmt.Sprintf("%s_%s", uuid.New().String(), cleanName)
+		savePath := filepath.Join("uploads", filename)
 
-	// 3. Upload to Cloudinary
-	secureURL, err := services.UploadToCloudinary(savePath, filename)
-	if err != nil {
-		return c.Status(500).JSON(fiber.Map{"message": "Failed to upload to cloud storage (Cloudinary): " + err.Error()})
+		if err := c.SaveFile(file, savePath); err != nil {
+			return c.Status(500).JSON(fiber.Map{"message": "Failed to save temporary attachment: " + err.Error()})
+		}
+		defer os.Remove(savePath) // Clean up local temporary file
+
+		// 3. Upload to Cloudinary
+		secureURL, err = services.UploadToCloudinary(savePath, filename)
+		if err != nil {
+			return c.Status(500).JSON(fiber.Map{"message": "Failed to upload to cloud storage (Cloudinary): " + err.Error()})
+		}
 	}
 
 	// 4. Create Report object
