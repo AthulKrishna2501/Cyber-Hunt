@@ -28,7 +28,7 @@ export default function Submissions() {
         const storedUser = localStorage.getItem('cyberhunt_user');
 
         if (!token) {
-            router.push('/login');
+            router.push('/login'); 
             return;
         }
         if (storedUser) {
