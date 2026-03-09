@@ -27,6 +27,11 @@ func main() {
 		log.Printf("Warning: Failed to initialize Cloudinary: %v", err)
 	}
 
+	// Ensure uploads directory exists for temporary storage
+	if err := os.MkdirAll("./uploads", 0755); err != nil {
+		log.Printf("Warning: Could not create uploads directory: %v", err)
+	}
+
 	app := fiber.New()
 
 	// CORS Setup
