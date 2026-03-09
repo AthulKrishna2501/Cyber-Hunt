@@ -3,7 +3,7 @@
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { reportSchema } from "@/lib/validation";
 import { api } from "@/lib/api";
@@ -19,6 +19,17 @@ export default function Dashboard() {
     const [targetUrl, setTargetUrl] = useState("https://target.cyberhunt.com");
     const [submissions, setSubmissions] = useState<any[]>([]);
     const [isSubmissionsLoading, setIsSubmissionsLoading] = useState(true);
+
+    const { register, handleSubmit, formState: { errors }, reset, setValue, control } = useForm({
+        resolver: zodResolver(reportSchema)
+    });
+
+    const formValues = useWatch({ control });
+
+    const handleSaveDraft = () => {
+        localStorage.setItem('cyberhunt_report_draft', JSON.stringify(formValues));
+        toast.success("Draft saved locally");
+    };
 
     useEffect(() => {
         const token = localStorage.getItem('cyberhunt_access_token');
@@ -36,6 +47,21 @@ export default function Dashboard() {
             setTargetUrl(storedTarget);
         }
 
+        // Load Draft
+        const draft = localStorage.getItem('cyberhunt_report_draft');
+        if (draft) {
+            try {
+                const parsedDraft = JSON.parse(draft);
+                if (parsedDraft.title) setValue("title", parsedDraft.title);
+                if (parsedDraft.description) setValue("description", parsedDraft.description);
+                if (parsedDraft.steps) setValue("steps", parsedDraft.steps);
+                if (parsedDraft.severity) setValue("severity", parsedDraft.severity);
+                toast.success("Restored unsaved draft");
+            } catch (e) {
+                // Ignore parsing errors for old/corrupted drafts
+            }
+        }
+
         const fetchRecentSubmissions = async () => {
             try {
                 const data = await api.getSubmissions();
@@ -47,11 +73,7 @@ export default function Dashboard() {
             }
         };
         fetchRecentSubmissions();
-    }, [router]);
-
-    const { register, handleSubmit, formState: { errors }, reset } = useForm({
-        resolver: zodResolver(reportSchema)
-    });
+    }, [router, setValue]);
 
     const [loadingStage, setLoadingStage] = useState<string | null>(null);
 
@@ -97,6 +119,7 @@ export default function Dashboard() {
             toast.success("Vulnerability report successfully encrypted and transmitted.");
             reset();
             setFile(null);
+            localStorage.removeItem('cyberhunt_report_draft'); // Clear draft on success
 
             // Optimistic UI Update: Use the result immediately instead of re-fetching
             if (result && result.report) {
@@ -226,7 +249,11 @@ export default function Dashboard() {
                         </div>
 
                         <div className="flex items-center justify-end gap-4 pt-6 border-t border-slate-200 dark:border-slate-800">
-                            <button type="button" className="px-6 py-2.5 rounded font-bold text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all">
+                            <button
+                                type="button"
+                                onClick={handleSaveDraft}
+                                className="px-6 py-2.5 rounded font-bold text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all"
+                            >
                                 Save as Draft
                             </button>
                             <button disabled={isLoading} type="submit" className="bg-primary hover:bg-primary/90 text-white px-10 py-3 rounded-lg font-bold text-sm shadow-lg shadow-primary/20 transition-all disabled:opacity-50 flex items-center gap-2">
