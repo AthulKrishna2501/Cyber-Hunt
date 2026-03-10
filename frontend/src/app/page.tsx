@@ -93,7 +93,7 @@ export default function Home() {
               >
                 <p className="text-slate-500 dark:text-slate-400 text-sm font-semibold uppercase tracking-wider">Top Prize</p>
                 <div className="flex items-baseline gap-2">
-                  <p className="text-4xl font-black text-slate-900 dark:text-white">₹5,000</p>
+                  <p className="text-4xl font-black text-slate-900 dark:text-white">₹10,000</p>
                 </div>
                 <div className="mt-4 h-1 w-full bg-slate-100 dark:bg-primary/10 rounded-full overflow-hidden">
                   <motion.div
@@ -257,7 +257,7 @@ export default function Home() {
                 <div className="text-primary font-black uppercase tracking-widest text-sm flex items-center justify-center gap-1">
                   <span className="material-symbols-outlined text-sm">workspace_premium</span> First Prize
                 </div>
-                <div className="text-5xl font-black text-slate-900 dark:text-white">₹5,000</div>
+                <div className="text-5xl font-black text-slate-900 dark:text-white">₹10,000</div>
                 <p className="text-slate-600 dark:text-slate-400 text-sm">Cash Prize, Certificate of Excellence, and Special Department Recognition.</p>
               </motion.div>
               <motion.div
