@@ -327,22 +327,22 @@ export default function Home() {
                 <p className="text-slate-600 dark:text-slate-400">Reach out to our event coordinators for specific doubts or clarification.</p>
               </div>
               <div className="flex flex-col sm:flex-row gap-4">
-                <a href="tel:+918888888888" className="flex items-center gap-3 bg-white dark:bg-background-dark p-4 rounded-xl border border-slate-200 dark:border-primary/10 hover:border-primary/30 transition-colors">
+                <a href="tel:+919567120073" className="flex items-center gap-3 bg-white dark:bg-background-dark p-4 rounded-xl border border-slate-200 dark:border-primary/10 hover:border-primary/30 transition-colors">
                   <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
                     <span className="material-symbols-outlined">call</span>
                   </div>
                   <div>
-                    <p className="text-xs text-slate-500 uppercase font-bold">Coordinator</p>
-                    <p className="font-mono font-bold">+91 88888 88888</p>
+                    <p className="text-xs text-slate-500 uppercase font-bold">Athul</p>
+                    <p className="font-mono font-bold">+91 95671 20073</p>
                   </div>
                 </a>
-                <a href="tel:+919999999999" className="flex items-center gap-3 bg-white dark:bg-background-dark p-4 rounded-xl border border-slate-200 dark:border-primary/10 hover:border-primary/30 transition-colors">
+                <a href="tel:+919567120061" className="flex items-center gap-3 bg-white dark:bg-background-dark p-4 rounded-xl border border-slate-200 dark:border-primary/10 hover:border-primary/30 transition-colors">
                   <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
                     <span className="material-symbols-outlined">call</span>
                   </div>
                   <div>
-                    <p className="text-xs text-slate-500 uppercase font-bold">Coordinator</p>
-                    <p className="font-mono font-bold">+91 99999 99999</p>
+                    <p className="text-xs text-slate-500 uppercase font-bold">Rizwan</p>
+                    <p className="font-mono font-bold">+91 95671 20061</p>
                   </div>
                 </a>
               </div>
