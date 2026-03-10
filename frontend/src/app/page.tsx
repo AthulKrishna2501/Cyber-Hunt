@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { Navbar } from "@/components/Navbar";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 
 export default function Home() {
   const targetRef = useRef<HTMLDivElement>(null);
