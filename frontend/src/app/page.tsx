@@ -327,22 +327,26 @@ export default function Home() {
                 <p className="text-slate-600 dark:text-slate-400">Reach out to our event coordinators for specific doubts or clarification.</p>
               </div>
               <div className="flex flex-col sm:flex-row gap-4">
-                <a href="tel:+919567120073" className="flex items-center gap-3 bg-white dark:bg-background-dark p-4 rounded-xl border border-slate-200 dark:border-primary/10 hover:border-primary/30 transition-colors">
-                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                <a href="tel:+919567120073" className="flex items-center gap-4 bg-white dark:bg-background-dark/40 p-5 rounded-2xl border border-slate-200 dark:border-white/5 hover:border-primary/30 transition-all hover:bg-white/5">
+                  <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
                     <span className="material-symbols-outlined">call</span>
                   </div>
-                  <div>
-                    <p className="text-xs text-slate-500 uppercase font-bold">Athul</p>
-                    <p className="font-mono font-bold">+91 95671 20073</p>
+                  <div className="flex flex-col">
+                    <p className="text-[10px] text-slate-500 uppercase font-bold tracking-widest mb-1">Athul</p>
+                    <p className="font-mono font-bold text-sm leading-tight text-slate-900 dark:text-white">+91</p>
+                    <p className="font-mono font-bold text-sm leading-tight text-slate-900 dark:text-white">95671</p>
+                    <p className="font-mono font-bold text-sm leading-tight text-slate-900 dark:text-white">20073</p>
                   </div>
                 </a>
-                <a href="tel:+919567120061" className="flex items-center gap-3 bg-white dark:bg-background-dark p-4 rounded-xl border border-slate-200 dark:border-primary/10 hover:border-primary/30 transition-colors">
-                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                <a href="tel:+919567120061" className="flex items-center gap-4 bg-white dark:bg-background-dark/40 p-5 rounded-2xl border border-slate-200 dark:border-white/5 hover:border-primary/30 transition-all hover:bg-white/5">
+                  <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
                     <span className="material-symbols-outlined">call</span>
                   </div>
-                  <div>
-                    <p className="text-xs text-slate-500 uppercase font-bold">Rizwan</p>
-                    <p className="font-mono font-bold">+91 95671 20061</p>
+                  <div className="flex flex-col">
+                    <p className="text-[10px] text-slate-500 uppercase font-bold tracking-widest mb-1">Rizwan</p>
+                    <p className="font-mono font-bold text-sm leading-tight text-slate-900 dark:text-white">+91</p>
+                    <p className="font-mono font-bold text-sm leading-tight text-slate-900 dark:text-white">95671</p>
+                    <p className="font-mono font-bold text-sm leading-tight text-slate-900 dark:text-white">20061</p>
                   </div>
                 </a>
               </div>
