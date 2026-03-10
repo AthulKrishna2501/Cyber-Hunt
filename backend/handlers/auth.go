@@ -16,6 +16,10 @@ func Register(c *fiber.Ctx) error {
 		return c.Status(400).JSON(fiber.Map{"message": "Invalid request body"})
 	}
 
+	if user.Email == "" || user.FullName == "" {
+		return c.Status(400).JSON(fiber.Map{"message": "Missing required fields"})
+	}
+
 	// 1. Check if user already exists
 	rows, err := services.GetUsers()
 	if err == nil {
@@ -63,6 +67,10 @@ func Login(c *fiber.Ctx) error {
 	req := new(models.LoginRequest)
 	if err := c.BodyParser(req); err != nil {
 		return c.Status(400).JSON(fiber.Map{"message": "Invalid request body"})
+	}
+
+	if req.Email == "" {
+		return c.Status(400).JSON(fiber.Map{"message": "Missing required fields"})
 	}
 
 	users, err := services.GetUsers()

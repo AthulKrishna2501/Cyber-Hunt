@@ -149,7 +149,7 @@ func EnsureReportsSheet() error {
 	return formatHeader("Reports", 10)
 }
 
-func AppendUser(values []interface{}) error {
+var AppendUser = func(values []interface{}) error {
 	// Create a new slice with current timestamp as the first element
 	timestamp := time.Now().Format("Jan 02, 2006 15:04:05")
 	finalValues := append([]interface{}{timestamp}, values...)
@@ -161,7 +161,7 @@ func AppendUser(values []interface{}) error {
 	return err
 }
 
-func GetUsers() ([][]interface{}, error) {
+var GetUsers = func() ([][]interface{}, error) {
 	resp, err := SheetsService.Spreadsheets.Values.Get(SheetID, "Users!A:G").Do()
 	if err != nil {
 		return nil, err
@@ -169,7 +169,7 @@ func GetUsers() ([][]interface{}, error) {
 	return resp.Values, nil
 }
 
-func AppendReport(report models.Report) error {
+var AppendReport = func(report models.Report) error {
 	values := []interface{}{
 		report.Timestamp, // Move to first column
 		report.ID,
@@ -189,7 +189,7 @@ func AppendReport(report models.Report) error {
 	return err
 }
 
-func GetReports() ([][]interface{}, error) {
+var GetReports = func() ([][]interface{}, error) {
 	resp, err := SheetsService.Spreadsheets.Values.Get(SheetID, "Reports!A:J").Do()
 	if err != nil {
 		return nil, err
