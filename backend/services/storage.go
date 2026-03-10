@@ -32,7 +32,7 @@ func InitStorage() error {
 	return nil
 }
 
-func UploadToCloudinary(filePath string, filename string) (string, error) {
+var UploadToCloudinary = func(filePath string, filename string) (string, error) {
 	ctx := context.Background()
 
 	// Robustly remove extension for PublicID

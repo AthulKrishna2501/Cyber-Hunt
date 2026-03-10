@@ -2,6 +2,7 @@ package handlers_test
 
 import (
 	"cyberhunt-backend/handlers"
+	"cyberhunt-backend/models"
 	"cyberhunt-backend/services"
 	"os"
 	"time"
@@ -42,6 +43,17 @@ func setupApp() *fiber.App {
 	}
 	services.AppendUser = func(values []interface{}) error {
 		return nil
+	}
+	services.UploadToCloudinary = func(filePath string, filename string) (string, error) {
+		return "https://res.cloudinary.com/test_image.png", nil
+	}
+	services.AppendReport = func(report models.Report) error {
+		return nil
+	}
+	services.GetReports = func() ([][]interface{}, error) {
+		return [][]interface{}{
+			{"Jan 01, 2026 12:00:00", "report123", "john@test.com", "Test Bug", "Desc", "1. Step 1", "High", "url", "Pending", "Jan 01, 2026"},
+		}, nil
 	}
 
 	return app
