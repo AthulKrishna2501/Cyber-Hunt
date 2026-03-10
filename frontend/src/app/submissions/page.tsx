@@ -8,6 +8,8 @@ import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import ReportPreviewModal from "@/components/ReportPreviewModal";
 
+import { RealTimeClock } from "@/components/RealTimeClock";
+
 export default function Submissions() {
     const router = useRouter();
     const [submissions, setSubmissions] = useState<any[]>([]);
@@ -28,7 +30,7 @@ export default function Submissions() {
         const storedUser = localStorage.getItem('cyberhunt_user');
 
         if (!token) {
-            router.push('/login'); 
+            router.push('/login');
             return;
         }
         if (storedUser) {
@@ -92,9 +94,12 @@ export default function Submissions() {
             </aside>
 
             <main className="flex-1 overflow-y-auto bg-background-light dark:bg-background-dark px-10 py-8">
-                <div className="flex flex-col gap-1 mb-8">
-                    <h1 className="text-slate-900 dark:text-slate-100 text-3xl font-black leading-tight tracking-tight">Submissions Log</h1>
-                    <p className="text-slate-500 dark:text-slate-400 text-base">Manage and track vulnerability reports for the global network</p>
+                <div className="flex items-center justify-between mb-8">
+                    <div className="flex flex-col gap-1">
+                        <h1 className="text-slate-900 dark:text-slate-100 text-3xl font-black leading-tight tracking-tight">Submissions Log</h1>
+                        <p className="text-slate-500 dark:text-slate-400 text-base">Manage and track vulnerability reports for the global network</p>
+                    </div>
+                    <RealTimeClock />
                 </div>
 
                 <div className="overflow-hidden rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/50 shadow-sm">
