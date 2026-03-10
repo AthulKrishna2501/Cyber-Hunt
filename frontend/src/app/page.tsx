@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { Navbar } from "@/components/Navbar";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
 export default function Home() {
   const targetRef = useRef<HTMLDivElement>(null);
@@ -327,9 +327,19 @@ export default function Home() {
                 <p className="text-slate-600 dark:text-slate-400">Reach out to our event coordinators for specific doubts or clarification.</p>
               </div>
               <div className="flex flex-col sm:flex-row gap-4">
-                <a href="tel:+919567120073" className="flex items-center gap-4 bg-white dark:bg-background-dark/40 p-5 rounded-2xl border border-slate-200 dark:border-white/5 hover:border-primary/30 transition-all hover:bg-white/5">
+                <button
+                  onClick={() => {
+                    navigator.clipboard.writeText("+919567120073");
+                    const el = document.getElementById("copy-athul");
+                    if (el) {
+                      el.innerText = "check";
+                      setTimeout(() => el.innerText = "call", 2000);
+                    }
+                  }}
+                  className="flex items-center gap-4 bg-white dark:bg-background-dark/40 p-5 rounded-2xl border border-slate-200 dark:border-white/5 hover:border-primary/30 transition-all hover:bg-white/5 text-left"
+                >
                   <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
-                    <span className="material-symbols-outlined">call</span>
+                    <span id="copy-athul" className="material-symbols-outlined transition-all">call</span>
                   </div>
                   <div className="flex flex-col">
                     <p className="text-[10px] text-slate-500 uppercase font-bold tracking-widest mb-1">Athul</p>
@@ -337,10 +347,20 @@ export default function Home() {
                     <p className="font-mono font-bold text-sm leading-tight text-slate-900 dark:text-white">95671</p>
                     <p className="font-mono font-bold text-sm leading-tight text-slate-900 dark:text-white">20073</p>
                   </div>
-                </a>
-                <a href="tel:+919567120061" className="flex items-center gap-4 bg-white dark:bg-background-dark/40 p-5 rounded-2xl border border-slate-200 dark:border-white/5 hover:border-primary/30 transition-all hover:bg-white/5">
+                </button>
+                <button
+                  onClick={() => {
+                    navigator.clipboard.writeText("+919567120061");
+                    const el = document.getElementById("copy-rizwan");
+                    if (el) {
+                      el.innerText = "check";
+                      setTimeout(() => el.innerText = "call", 2000);
+                    }
+                  }}
+                  className="flex items-center gap-4 bg-white dark:bg-background-dark/40 p-5 rounded-2xl border border-slate-200 dark:border-white/5 hover:border-primary/30 transition-all hover:bg-white/5 text-left"
+                >
                   <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
-                    <span className="material-symbols-outlined">call</span>
+                    <span id="copy-rizwan" className="material-symbols-outlined transition-all">call</span>
                   </div>
                   <div className="flex flex-col">
                     <p className="text-[10px] text-slate-500 uppercase font-bold tracking-widest mb-1">Rizwan</p>
@@ -348,7 +368,7 @@ export default function Home() {
                     <p className="font-mono font-bold text-sm leading-tight text-slate-900 dark:text-white">95671</p>
                     <p className="font-mono font-bold text-sm leading-tight text-slate-900 dark:text-white">20061</p>
                   </div>
-                </a>
+                </button>
               </div>
             </motion.div>
           </div>
