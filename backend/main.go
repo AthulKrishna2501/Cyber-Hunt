@@ -4,7 +4,9 @@ import (
 	"cyberhunt-backend/handlers"
 	"cyberhunt-backend/services"
 	"log"
+	"net/http"
 	"os"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
@@ -48,7 +50,14 @@ func main() {
 	}))
 
 	// Routes
+	app.Get("/ping", func(c *fiber.Ctx) error {
+		return c.SendString("pong")
+	})
+
 	api := app.Group("/api")
+	api.Get("/ping", func(c *fiber.Ctx) error {
+		return c.SendString("pong")
+	})
 	api.Post("/register", handlers.Register)
 	api.Post("/login", handlers.Login)
 	api.Post("/refresh", handlers.RefreshToken)
@@ -60,6 +69,9 @@ func main() {
 
 	app.Static("/uploads", "./uploads")
 
+	// Start keep-alive cron job
+	go keepalive()
+
 	// Start Server
 	port := os.Getenv("PORT")
 	if port == "" {
@@ -68,4 +80,26 @@ func main() {
 
 	log.Printf("Server starting on port %s", port)
 	log.Fatal(app.Listen(":" + port))
+}
+
+func keepalive() {
+	url := os.Getenv("RENDER_EXTERNAL_URL")
+	if url == "" {
+		url = os.Getenv("SERVER_URL")
+	}
+	if url == "" {
+		log.Println("Target URL for keep-alive not found. Skipping cron job.")
+		return
+	}
+
+	ticker := time.NewTicker(14 * time.Minute)
+	for range ticker.C {
+		resp, err := http.Get(url + "/api/ping")
+		if err != nil {
+			log.Printf("Keep-alive ping failed: %v", err)
+		} else {
+			log.Printf("Keep-alive ping successful: %d", resp.StatusCode)
+			resp.Body.Close()
+		}
+	}
 }

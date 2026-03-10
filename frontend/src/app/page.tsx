@@ -291,7 +291,7 @@ export default function Home() {
             </motion.div>
             <div className="flex flex-col gap-4">
               {[
-                { q: "Who can participate?", a: "Students of the institution who want to improve their secure coding awareness and learn ethical hacking." },
+                { q: "Who can participate?", a: "Students of brototype who want to improve their secure coding awareness and learn ethical hacking." },
                 { q: "Can we test the live institution portal?", a: "NO. Testing against the live institutional systems or real student accounts is strictly prohibited. You must use the provided Test Portal environment." },
                 { q: "What should the Vulnerability Report contain?", a: "Title, Description, Steps to Reproduce, Screenshots/Proof of Concept, Impact, and a Suggested Fix." },
                 { q: "What if multiple people report the same bug?", a: "Duplicate vulnerability submissions will only be rewarded once to the first valid report submitted." }
