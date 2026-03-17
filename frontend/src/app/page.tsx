@@ -386,7 +386,7 @@ export default function Home() {
             <div className="absolute inset-0 bg-black opacity-10 mix-blend-overlay"></div>
             <div className="relative z-10 flex flex-col items-center gap-8">
               <h2 className="text-3xl lg:text-5xl font-black">Ready to breach the perimeter?</h2>
-              <p className="max-w-xl text-primary-100/90 text-lg text-white/90">Registration closes in 48 hours. Secure your spot in the most prestigious security event of the year.</p>
+
               <div className="flex flex-wrap justify-center gap-4">
                 <Link href="/register" className="bg-white text-primary hover:bg-slate-100 px-10 py-4 rounded-xl text-lg font-bold transition-all">
                   Join Now
